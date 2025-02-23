@@ -3,12 +3,29 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import engine, Base, get_db
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+# CORS for frontend later
+
+
+
+
 # Create tables
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
+
+
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace * with your frontend domain later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/users/", response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
